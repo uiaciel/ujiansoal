@@ -136,7 +136,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fa fa-file-text" aria-hidden="true"></i>
                                 </button>
-                                <a href="/ujian/create/{{ $soal->id }}" class="btn btn-success"><i class="fa fa-eye"
+                                <a href="/ujian/create/{{ $soal->id }}" target="popup" onclick="window.open('width=1000,height=700')" class="btn btn-success"><i class="fa fa-eye"
                                         aria-hidden="true"></i></a>
                             </form>
                         </td>

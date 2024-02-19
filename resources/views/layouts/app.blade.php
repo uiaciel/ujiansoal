@@ -49,16 +49,6 @@
                             <a class="nav-link" href="/siswa"><i class="fa fa-user-group" aria-hidden="true"></i>
                                 Siswa</a>
                         </li>
-                        @elsecan('isSiswa')
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{{ route('ujian.index') }}"><i
-                                    class="fa fa-paperclip" aria-hidden="true"></i>Ujian</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/hasil-ujian"><i class="fa fa-sticky-note"
-                                    aria-hidden="true"></i> Hasil Ujian</a>
-                        </li>
-                        @endcan
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
@@ -71,6 +61,17 @@
 
                             </ul>
                         </li>
+                        @elsecan('isSiswa')
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{{ route('ujian.index') }}"><i
+                                    class="fa fa-paperclip" aria-hidden="true"></i>Ujian</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/hasil-ujian"><i class="fa fa-sticky-note"
+                                    aria-hidden="true"></i> Hasil Ujian</a>
+                        </li>
+                        @endcan
+
                     </ul>
 
                     <!-- Right Side Of Navbar -->

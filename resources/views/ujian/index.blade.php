@@ -34,7 +34,7 @@
                             <p>{{ Auth::user()->name }} - {{  Auth::user()->nik }}</p>
                         </div>
                         <div class="modal-footer">
-                            <a href="/ujian/create/{{ $datanya->id }}" target="_blank" class="btn btn-primary">Yakin</a>
+                            <a href="/ujian/create/{{ $datanya->id }}"  onclick="openInNewWindow(event)" class="btn btn-primary">Yakin</a>
 
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                 Close
@@ -96,4 +96,12 @@
     </div>
     @endcan
 </div>
+<script>
+    function openInNewWindow(event) {
+        event.preventDefault(); // Mencegah perilaku default dari tautan
+
+        // Membuka tautan dalam jendela baru
+        window.open(event.target.href, '_blank', 'fullscreen=yes,toolbar=no,location=no');
+    }
+</script>
 @endsection

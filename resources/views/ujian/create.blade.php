@@ -179,30 +179,59 @@
         }
     }
 
+    function submitForm() {
+            document.getElementById('myForm').submit();
+        }
+
     countdown();
 
 
 
     // Mencegah pengguna untuk kembali ke halaman sebelumnya
-    window.history.pushState(null, null, window.location.href);
-        window.onpopstate = function(event) {
-            window.history.pushState(null, null, window.location.href);
-        };
+    // window.history.pushState(null, null, window.location.href);
+    //     window.onpopstate = function(event) {
+    //         window.history.pushState(null, null, window.location.href);
+    //     };
 
         // Mencegah reload halaman atau mengklik tombol refresh di browser
-        window.onbeforeunload = function(event) {
-            const formSubmitted = document.getElementById('myForm').submitted;
+        // window.onbeforeunload = function(event) {
+        //     const formSubmitted = document.getElementById('myForm').submitted;
 
-            if (!formSubmitted) {
-                return "Apakah Anda yakin ingin meninggalkan halaman?";
+        //     if (!formSubmitted) {
+        //         return "Apakah Anda yakin ingin meninggalkan halaman?";
+        //     }
+        // };
+
+        // Menandai bahwa formulir telah dikirim saat pengguna menekan tombol submit
+        // document.getElementById('myForm').addEventListener('submit', function(event) {
+        //     this.submitted = true;
+        // });
+
+         // Menampilkan pesan saat halaman dimuat
+        //  window.onload = function() {
+        //     alert("Untuk keluar dari halaman ini, silakan klik tombol Close atau Back di browser Anda.");
+        // };
+
+        // Menampilkan pesan saat pengguna mencoba menutup tab atau browser
+        // window.addEventListener('beforeunload', function(event) {
+        //     // Ubah pesan pada beberapa browser (mungkin tidak berfungsi di semua browser)
+        //     event.returnValue = 'Pesan kustom Anda di sini';
+        // });
+
+
+         // Menangani ketika browser ditutup
+         window.onunload = function() {
+            if (timeLeft > 0) {
+                submitForm();
             }
         };
 
-        // Menandai bahwa formulir telah dikirim saat pengguna menekan tombol submit
-        document.getElementById('myForm').addEventListener('submit', function(event) {
-            this.submitted = true;
+        // Menangani ketika tab ditutup
+        window.addEventListener('beforeunload', function(event) {
+            if (timeLeft > 0) {
+                submitForm();
+            }
         });
-
 
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

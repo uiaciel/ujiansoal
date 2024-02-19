@@ -124,7 +124,7 @@
                     <thead class=" table-dark">
                         <tr>
                             <th>No</th>
-                            <th scope="col">Soal + Jawaban</th>
+                            <th>Soal + Jawaban</th>
                             <th scope="col">Pilihan Ganda</th>
                             <th scope="col" class="text-center">Nilai</th>
                         </tr>
@@ -133,7 +133,7 @@
                         @foreach ($pertanyaansoal as $datasoal )
                         <tr class="">
                             <td>{{ $loop->iteration }}</td>
-                            <td>{!!$datasoal->pertanyaan!!}<br>
+                            <td class="text-wrap" style="width: 400px">{!!$datasoal->pertanyaan!!}<br>
                                 <h6><span class="badge bg-success">Jawaban Benar : {{ $datasoal->jawaban }} </span></h6>
                             </td>
                             <td>
