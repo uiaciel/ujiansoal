@@ -15,16 +15,19 @@ class DatabaseSeeder extends Seeder
 
         \App\Models\Kelas::create([
             'nama' => 'TKJ IX',
+            'slug' => 'tkj-ix',
             'tahun' => '2023'
         ]);
 
         \App\Models\Kelas::create([
             'nama' => 'TKJ X',
+            'slug' => 'tkj-x',
             'tahun' => '2023'
         ]);
 
         \App\Models\Kelas::create([
             'nama' => 'TKJ XI',
+            'slug' => 'tkj-xi',
             'tahun' => '2023'
         ]);
 

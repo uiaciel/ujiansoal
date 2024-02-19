@@ -31,12 +31,12 @@ class AdminController extends Controller
 
     public function siswa()
     {
-        $kelas = Kelas::All();
+        // $kelas = Kelas::All();
         $siswa = User::where('role', 'Siswa')->get();
 
         return view('admin.siswa', [
             'siswa' => $siswa,
-            'kelas' => $kelas
+            // 'kelas' => $kelas
         ]);
     }
 
@@ -91,7 +91,15 @@ class AdminController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $user = User::find($id);
+        $user->nik = $request->nik;
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->kelas_id = $request->kelas_id;
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect()->back();
     }
 
     /**

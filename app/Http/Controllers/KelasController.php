@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class KelasController extends Controller
 {
@@ -34,6 +36,7 @@ class KelasController extends Controller
     {
         $kelas = new Kelas;
         $kelas->nama = $request->nama;
+        $kelas->slug = Str::slug($request->nama);
         $kelas->tahun = $request->tahun;
         $kelas->save();
 
@@ -43,9 +46,17 @@ class KelasController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Kelas $kelas)
+    public function show($id)
     {
-        //
+        $slug = Kelas::where('slug', $id)->pluck('id');
+
+        $user = User::where('kelas_id', $slug)->get();
+        $namakelas = Kelas::where('id', $slug)->first();
+
+        return view('admin.listkelas', [
+            'user' => $user,
+            'namakelas' => $namakelas
+        ]);
     }
 
     /**
@@ -61,7 +72,12 @@ class KelasController extends Controller
      */
     public function update(Request $request, Kelas $kelas)
     {
-        //
+        $kelas->nama = $request->nama;
+        $kelas->slug = Str::slug($request->nama);
+        $kelas->tahun = $request->tahun;
+        $kelas->save();
+
+        return redirect()->back();
     }
 
     /**
@@ -69,6 +85,9 @@ class KelasController extends Controller
      */
     public function destroy(Kelas $kelas)
     {
-        //
+
+        $kelas->delete();
+
+        return redirect()->back();
     }
 }

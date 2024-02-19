@@ -54,25 +54,25 @@
                             <a class="nav-link active" aria-current="page" href="{{ route('ujian.index') }}"><i
                                     class="fa fa-paperclip" aria-hidden="true"></i>Ujian</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/hasil-ujian"><i class="fa fa-sticky-note"
+                                    aria-hidden="true"></i> Hasil Ujian</a>
+                        </li>
                         @endcan
-                        {{-- <li class="nav-item dropdown">
+                        <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
-                                Dropdown
+                                <i class="fa-solid fa-chalkboard-user"></i> Kelas
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                @foreach ($kelas as $kelas )
+                                <li><a class="dropdown-item" href="/kelas/{{ $kelas->slug }}">{{ $kelas->nama }}</a></li>
+                                @endforeach
+
                             </ul>
-                        </li> --}}
-                        {{-- <li class="nav-item">
-                            <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-                        </li> --}}
+                        </li>
                     </ul>
+
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         <!-- Authentication Links -->

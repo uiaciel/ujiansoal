@@ -24,22 +24,35 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/users', [AdminController::class, 'users'])->name('users.list');
-Route::get('/siswa', [AdminController::class, 'siswa'])->name('siswa.list');
+Route::group([
+    'middleware' => ['auth'],
+    // 'prefix' => 'admin'
+], function () {
 
-Route::post('/siswa', [AdminController::class, 'tambahsiswa'])->name('siswa.store');
+    Route::get('/users', [AdminController::class, 'users'])->name('users.list');
+    Route::get('/siswa', [AdminController::class, 'siswa'])->name('siswa.list');
 
-Route::get('/ujian/create/{id}', [UjianController::class, 'create'])->name('ujian.create');
-Route::resource('/ujian', UjianController::class);
-Route::get('/hasil-ujian', [UjianController::class, 'hasilujian'])->name('ujian.hasil');
+    Route::post('/siswa', [AdminController::class, 'tambahsiswa'])->name('siswa.store');
+    Route::post('/siswa/update', [AdminController::class, 'update'])->name('siswa.update');
+
+    Route::get('/ujian/create/{id}', [UjianController::class, 'create'])->name('ujian.create');
+    Route::resource('/ujian', UjianController::class);
+    Route::get('/hasil-ujian', [UjianController::class, 'hasilujian'])->name('ujian.hasil');
+
+    Route::resource('/soal', SoalController::class);
+    Route::resource('/kelas', KelasController::class);
+    Route::resource('/jawaban', JawabanController::class);
+
+    Route::get('/pertanyaan/create', [PertanyaanController::class, 'create'])->name('pertanyaan.create');
+    Route::resource('/pertanyaan', PertanyaanController::class);
+    Route::post('/import/data', [SoalController::class, 'import'])->name('ujian.import');
+
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+});
+
+
 
 Auth::routes();
-Route::resource('/soal', SoalController::class);
-Route::resource('/kelas', KelasController::class);
-Route::resource('/jawaban', JawabanController::class);
 
-Route::get('/pertanyaan/create', [PertanyaanController::class, 'create'])->name('pertanyaan.create');
-Route::resource('/pertanyaan', PertanyaanController::class);
-Route::post('/import/data', [SoalController::class, 'import'])->name('ujian.import');
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
