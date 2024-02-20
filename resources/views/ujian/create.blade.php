@@ -1,11 +1,27 @@
-@extends('layouts.app')
+@extends('layouts.guest')
 @section('content')
+<style>
+    .fixed-element {
+      position: fixed;
+      top: 10px; /* Sesuaikan dengan posisi vertikal yang diinginkan */
+      right: 10px; /* Sesuaikan dengan posisi horizontal yang diinginkan */
+      z-index: 1000; /* Sesuaikan jika diperlukan */
+    }
+</style>
 <div class="container">
+    <div class="fixed-element">
+        <div class="card">
+            <div class="card-body">
+                <div id="timer" class="fs-3 fw-bold"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header fs-3">
-                    Ujian {{ $soal->title }} - {{ $soal->mapel }} - <div id="timer"></div>
+                    Ujian {{ $soal->title }} - {{ $soal->mapel }}
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -18,7 +34,6 @@
                                     <th scope="col">Durasi</th>
                                     <th scope="col">Keterangan</th>
                                     <th scope="col">Penguji</th>
-
                                 </tr>
                             </thead>
                             <tbody>
@@ -38,7 +53,6 @@
                                 <tr>
                                     <td class="fs-bold">Nama Siswa</td>
                                     <td class="fs-bold">{{ Auth::user()->name }}</td>
-
                                 </tr>
                                 <tr>
                                     <td>Kelas</td>
@@ -49,94 +63,63 @@
                     </div>
                 </div>
                 <div class="card-body p-3">
-                @if ($errors->any())
+                    @if ($errors->any())
                     <div class="alert alert-danger">
                         <ul>
                             @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
+                            <li>{{ $error }}</li>
                             @endforeach
                         </ul>
                     </div>
-                @endif
+                    @endif
                     <form method="POST" id="myForm" action="{{ route('ujian.store') }}" enctype="multipart/form-data">
                         @csrf
                         <input value="{{ $soal->id }}" name="soal_id" hidden>
                         <h5 class="mb-3">Jawablah pertanyaan ini dengan benar</h5>
                         <ol type="1">
-
                             @foreach ($pertanyaan->shuffle() as $pertanyaan )
                             <li class="mb-3"><div class="fw-bold fs-5">{!! $pertanyaan->pertanyaan !!}</div>
                                 <div class="group">
                                     <input value="{{ $pertanyaan->id }}" name="pertanyaan[]" hidden>
-
                                     @foreach ($pertanyaan->pilihan->shuffle() as $jawab )
-
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" value="{{ $jawab->jawaban }}" {{ in_array($jawab->jawaban, old('jawaban', [])) ? 'checked' : '' }}
                                             data-pertanyaan="{{ $pertanyaan->id }}" name="jawaban[]">
                                         <label class="form-check-label" for=""> {{ $jawab->jawaban }} </label>
                                     </div>
-
                                     @endforeach
-
-
-
                                 </div>
                             </li>
                             @endforeach
                         </ol>
                         <div class="mb-3 text-end">
                             <button type="button" data-bs-toggle="modal"
-                            data-bs-target="#modalId" class="btn btn-primary">
+                                data-bs-target="#modalId" class="btn btn-primary">
                                 Submit
                             </button>
-
-                           <div
-                                class="modal fade"
-                                id="modalId"
-                                tabindex="-1"
-                                data-bs-backdrop="static"
-                                data-bs-keyboard="false"
-
-                                role="dialog"
-                                aria-labelledby="modalTitleId"
-                                aria-hidden="true"
-                            >
-                                <div
-                                    class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
-                                    role="document"
-                                >
+                            <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static"
+                                data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+                                    role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="modalTitleId">
                                                 Ujian
                                             </h5>
-                                            <button
-                                                type="button"
-                                                class="btn-close"
-                                                data-bs-dismiss="modal"
-                                                aria-label="Close"
-                                            ></button>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             Apakah Kamu yakin ?
                                         </div>
                                         <div class="modal-footer">
-
                                             <button type="submit" class="btn btn-primary">Submit</button>
-                                            <button
-                                                type="button"
-                                                class="btn btn-secondary"
-                                                data-bs-dismiss="modal"
-                                            >
-                                                Close
-                                            </button>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                     </form>
                 </div>
@@ -145,93 +128,49 @@
     </div>
 </div>
 <script type="text/javascript">
-
     // Waktu dalam menit
     const duration = {{ $soal->menit }};
-    let timeLeft = duration * 60;
-
-     // Mencegah reload halaman saat tombol F5 atau Ctrl+R ditekan
-     document.onkeydown = function (e) {
-        if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) {
-            e.preventDefault();
-            alert('Refresh dinonaktifkan');
-        }
-    };
-
+    let timeLeft = sessionStorage.getItem('timeLeft') || duration * 60; // Mengambil waktu tersisa dari sessionStorage atau mengatur ke durasi awal
     const countdownTimer = document.getElementById('timer');
 
     function countdown() {
         const minutes = Math.floor(timeLeft / 60);
         let seconds = timeLeft % 60;
-
         countdownTimer.innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-
         if (timeLeft == 600) {
             alert('Waktu tersisa 10 menit!');
         }
-
         if (timeLeft <= 0) {
             window.onbeforeunload = null;
-            document.getElementById('myForm').submit();
+            submitForm();
         } else {
             timeLeft--;
+            sessionStorage.setItem('timeLeft', timeLeft); // Simpan waktu tersisa di sessionStorage
             setTimeout(countdown, 1000);
         }
     }
-
-    function submitForm() {
-            document.getElementById('myForm').submit();
-        }
-
     countdown();
 
+    // Mencegah reload halaman saat tombol F5 atau Ctrl+R ditekan
+    document.onkeydown = function (e) {
+        if (e.key === 'F5' || (e.ctrlKey && e.key === 'r' || e.key === 'F11' || e.key === 'esc' || e.key === 'F12')) {
+            e.preventDefault();
+            alert('Maaf, Tidak Diijinkan Refresh dan tombol lainnya');
+        }
+    };
 
+    // Menangani ketika browser ditutup atau tab ditutup
+    window.addEventListener('beforeunload', function(event) {
+        if (timeLeft > 0) {
+            sessionStorage.removeItem('timeLeft'); // Hapus waktu tersisa dari sessionStorage saat formulir dikirim
+            submitForm();
+        }
+    });
 
-    // Mencegah pengguna untuk kembali ke halaman sebelumnya
-    // window.history.pushState(null, null, window.location.href);
-    //     window.onpopstate = function(event) {
-    //         window.history.pushState(null, null, window.location.href);
-    //     };
-
-        // Mencegah reload halaman atau mengklik tombol refresh di browser
-        // window.onbeforeunload = function(event) {
-        //     const formSubmitted = document.getElementById('myForm').submitted;
-
-        //     if (!formSubmitted) {
-        //         return "Apakah Anda yakin ingin meninggalkan halaman?";
-        //     }
-        // };
-
-        // Menandai bahwa formulir telah dikirim saat pengguna menekan tombol submit
-        // document.getElementById('myForm').addEventListener('submit', function(event) {
-        //     this.submitted = true;
-        // });
-
-         // Menampilkan pesan saat halaman dimuat
-        //  window.onload = function() {
-        //     alert("Untuk keluar dari halaman ini, silakan klik tombol Close atau Back di browser Anda.");
-        // };
-
-        // Menampilkan pesan saat pengguna mencoba menutup tab atau browser
-        // window.addEventListener('beforeunload', function(event) {
-        //     // Ubah pesan pada beberapa browser (mungkin tidak berfungsi di semua browser)
-        //     event.returnValue = 'Pesan kustom Anda di sini';
-        // });
-
-
-         // Menangani ketika browser ditutup
-         window.onunload = function() {
-            if (timeLeft > 0) {
-                submitForm();
-            }
-        };
-
-        // Menangani ketika tab ditutup
-        window.addEventListener('beforeunload', function(event) {
-            if (timeLeft > 0) {
-                submitForm();
-            }
-        });
+    function submitForm() {
+        sessionStorage.removeItem('timeLeft'); // Hapus waktu tersisa dari sessionStorage saat formulir dikirim
+        document.getElementById('myForm').submit();
+    }
 
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
